@@ -3,8 +3,8 @@ memcache-lmdb test tool
 How to Run :
 
 	1)	make
-	2)	bin/rw_test_run_threads
+	2)	bin/rw_test_run_threads <port_no>
 
 
 Help:
-	No of KEYS, VALUE_SIZE, MAX_THREADS can be configured in include/read_write_tests.h file
+	MAX_KEYS, MAX_VALUE_SIZE, MAX_THREADS can be configured in include/read_write_tests_common.h file
