@@ -1,0 +1,74 @@
+#prerquisite
+sudo apt-get install build-essential
+
+#libevent
+wget https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz
+tar -xvzf libevent-2.1.8-stable.tar.gz 
+cd libevent-2.1.8-stable/
+./configure
+make
+sudo make install
+
+#memcached server
+wget https://memcached.org/files/memcached-1.4.39.tar.gz
+tar -xvzf memcached-1.4.39.tar.gz 
+cd memcached-1.4.39/
+./configure --enable-64bit --with-libevent=/usr/local/lib 
+make
+sudo make install
+
+#libmemcached
+wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
+
+./configure --enable-libmemcachedprotocol --enable-memaslap --with-libevent=/usr/local/lib/ --enable-64bit --enable-threads
+OR
+./configure --enable-libmemcachedprotocol --enable-memaslap --with-libevent=/usr/local/lib/ --enable-64bit --enable-threads LDFLAGS="-L/lib64 -lpthread"
+
+make
+sudo make install
+
+
+#lmdb
+git clone https://github.com/LMDB/lmdb.git
+make
+sudo make install
+
+#memcachedb-lmdb
+git clone https://github.com/LMDB/memcachedb.git memcachedb-lmdb
+./configure --enable-threads --with-libevent=/usr/local/lib/
+make
+sudo make install
+
+#berkelydb
+wget http://download.oracle.com/berkeley-db/db-5.1.29.tar.gz
+tar -xvzf db-5.1.29.tar.gz 
+cd db-5.1.29/
+cd build_unix/
+../dist/configure 
+make
+sudo make install
+sudo echo "/usr/local/BerkeleyDB.5.1/lib" > /etc/ld.so.conf.d/berkleydb.conf
+sudo ldconfig
+
+#memcachedb
+git clone https://github.com/stvchu/memcachedb.git
+./configure --enable-threads --with-bdb=/usr/local/BerkeleyDB.5.1/ --with-libevent=/usr/local/lib/
+make
+sudo make install
+
+#running memaslap
+memaslap --servers=127.0.0.1:21201 --concurrency=100 --execute_number=1000000 --win_size=10k
+memaslap --servers=127.0.0.1:11211 --concurrency=100 --execute_number=1000000 --win_size=10k
+
+
+#run memdb
+1. Using berkleydb
+	cd memcachedb
+	sudo ./memcachedb -p 21201 -r -u root -H /mdb-data/mydemo-bdb/ -N -P /mdb-data/21201-bd.pid -v
+2. Using lmdb
+	cd ./memcachedb-lmdb
+        sudo ./memcachedb -p 21201 -r -u root -H /mdb-data/mydemo/ -N -P /mdb-data/21201.pid -v
+
+
+
+
